@@ -32,7 +32,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.Reader;
 
 import java.sql.DriverManager;
 import java.sql.Connection;
@@ -40,50 +39,56 @@ import java.sql.Connection;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.plugin.logging.SystemStreamLog;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class TestCaseStartH2Mojo {
+/**
+ * A <a href="http://www.junit.org/">JUnit</a> test suite that
+ * exercises the {@link AbstractH2Mojo} class.
+ *
+ * @author <a href="mailto:ljnelson@gmail.com">Laird Nelson</a>
+ *
+ * @since 1.0-SNAPSHOT
+ */
+public class TestCaseSpawnH2Mojo {
 
-  private AbstractH2Mojo startMojo;
+  /**
+   * The {@link AbstractH2Mojo} under test.  This field may be {@code
+   * null}.  It is initialized by the {@link #setUp()} method.
+   */
+  private AbstractH2Mojo mojo;
 
-  private AbstractH2Mojo stopMojo;
-
+  /**
+   * Sets up the {@link AbstractH2Mojo} to be tested.
+   */
   @Before
-  public void setUp() throws Exception {
-    this.startMojo = new StartH2Mojo();
+  public void setUp() {
+    this.mojo = new SpawnH2Mojo();
     final String projectBuildDirectoryName = System.getProperty("maven.project.build.directory", System.getProperty("project.build.directory"));
     if (projectBuildDirectoryName != null) {
-      this.startMojo.setBaseDirectory(new File(projectBuildDirectoryName));
+      this.mojo.setBaseDirectory(new File(projectBuildDirectoryName));
     }
-    this.startMojo.setLog(new SystemStreamLogWithDebugEnabled());
-    this.startMojo.setTrace(true);
-    assertEquals(9092, this.startMojo.getPort());
-
-    this.stopMojo = new StopH2Mojo();
-    if (projectBuildDirectoryName != null) {
-      this.stopMojo.setBaseDirectory(new File(projectBuildDirectoryName));
-    }
-    this.stopMojo.setLog(new SystemStreamLogWithDebugEnabled());
-    this.stopMojo.setTrace(true);
-    assertEquals(9092, this.stopMojo.getPort());
-
+    this.mojo.setLog(new SystemStreamLogWithDebugEnabled());
+    this.mojo.setTrace(true);
+    assertEquals(9092, this.mojo.getPort());
   }
 
+  /**
+   * Exercises the {@link AbstractH2Mojo#spawnServer()} and {@link
+   * AbstractH2Mojo#shutdownServer()} methods directly.
+   *
+   * @exception Exception if an error occurs; make sure to check your
+   * system to see if an H2 process spawned by this test is still
+   * running
+   */
   @Test
-  public void testStartAndStop() throws Exception {
-    this.startMojo.execute();
-    this.stopMojo.execute();
-  }
-
-  @Test
-  public void testSpawn() throws Exception {
-    this.startMojo.setJavaOptions("-Xmx384m");
-    Process p = this.startMojo.spawnServer();
+  public void testSpawnServer() throws Exception {
+    final Process p = this.mojo.spawnServer();
     assertNotNull(p);
+
+    // Make sure the process is alive and not exited.
     int exitValue = 0;
     try {
       exitValue = p.exitValue();
@@ -93,13 +98,17 @@ public class TestCaseStartH2Mojo {
       // value should fail.
     }
 
-    final Connection connection = DriverManager.getConnection("jdbc:h2:tcp://localhost:9092/crap", "sa", "");
+    // Check to make sure we can establish a connection to a
+    // database at that location.
+    final Connection connection = DriverManager.getConnection("jdbc:h2:tcp://localhost:9092/test", "sa", "");
     assertNotNull(connection);
     connection.close();
 
-    this.startMojo.shutdownServer();
-    Thread.currentThread().sleep(200L);
+    // Shut down the spawned process.
+    this.mojo.shutdownServer();
+    p.waitFor();
 
+    // Ensure it actually exited and exited cleanly.
     try {
       assertEquals(0, p.exitValue());
     } catch (final AssertionError error) {
@@ -113,6 +122,15 @@ public class TestCaseStartH2Mojo {
     }
   }
 
+  /**
+   * Prints an {@link InputStream} to {@link System#out System.out}.
+   *
+   * @param stream the {@link InputStream} whose contents should be
+   * entirely printed; may be {@code null} in which case nothing will
+   * happen
+   *
+   * @exception IOException if an error occurs
+   */
   private static final void printInputStream(final InputStream stream) throws IOException {
     if (stream != null) {
       final BufferedReader reader = new BufferedReader(new InputStreamReader(stream));
@@ -142,7 +160,7 @@ public class TestCaseStartH2Mojo {
      * @return {@code true}
      */
     @Override
-    public boolean isDebugEnabled() {
+    public final boolean isDebugEnabled() {
       return true;
     }
 
