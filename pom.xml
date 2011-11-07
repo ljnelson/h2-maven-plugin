@@ -130,6 +130,9 @@
         <plugin>
           <artifactId>maven-compiler-plugin</artifactId>
           <version>${mavenCompilerPluginVersion}</version>
+          <configuration>
+            <compilerArgument>-Xlint:all</compilerArgument>
+          </configuration>
         </plugin>
 
         <plugin>
@@ -336,9 +339,11 @@
     <wagonGitsiteVersion>0.4-SNAPSHOT</wagonGitsiteVersion>
 
     <!-- maven-compiler-plugin Properties -->
+    <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
     <maven.compiler.showWarnings>true</maven.compiler.showWarnings>
     <maven.compiler.source>1.6</maven.compiler.source>
     <maven.compiler.target>1.6</maven.compiler.target>
+    <maven.compiler.verbose>true</maven.compiler.verbose>
 
     <!-- maven-javadoc-plugin Properties -->
     <detectLinks>false</detectLinks>
