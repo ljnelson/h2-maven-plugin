@@ -41,13 +41,13 @@ import java.sql.SQLException;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.h2.server.TcpServer;
-
-import org.h2.tools.Server;
-
 import org.apache.maven.plugin.AbstractMojo;
 
 import org.apache.maven.plugin.logging.Log;
+
+import org.h2.server.TcpServer;
+
+import org.h2.tools.Server;
 
 /**
  * An abstract <a href="http://maven.apache.org/">Maven</a> plugin, or
@@ -59,6 +59,8 @@ import org.apache.maven.plugin.logging.Log;
  * @author <a href="mailto:ljnelson@gmail.com">Laird Nelson</a>
  *
  * @since <tt>1.0-SNAPSHOT</tt>
+ *
+ * @version <tt>1.0-SNAPSHOT</tt>
  */
 public abstract class AbstractH2Mojo extends AbstractMojo {
 
@@ -200,30 +202,85 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
     return this.shutdownAllServers;
   }
 
+  /**
+   * Sets whether a shutdown operation should shut down all H2 TCP
+   * servers running on the host in question.
+   *
+   * @param shutdownAllServers if a shutdown operation should shut
+   * down all H2 TCP servers running on the host in question
+   */
   public void setShutdownAllServers(final boolean shutdownAllServers) {
     this.shutdownAllServers = shutdownAllServers;
   }
 
+  /**
+   * Returns the password necessary to shut down spawned H2 TCP
+   * servers.
+   *
+   * <p>This method may return {@code null}.</p>
+   *
+   * @return the shutdown password, or {@code null}
+   */
   public String getShutdownPassword() {
     return this.shutdownPassword;
   }
 
+  /**
+   * Sets the password necessary to shut down spawned H2 TCP servers.
+   *
+   * @param pw the new password; may be {@code null}
+   */
   public void setShutdownPassword(final String pw) {
     this.shutdownPassword = pw;
   }
 
+  /**
+   * Returns the hostname to which shutdown requests will be routed.
+   *
+   * <p>This method may return {@code null}.  Consumers of this method
+   * should interpret such return values as being equal to {@code
+   * localhost}.</p>
+   *
+   * @return the hostname to which shutdown requests will be routed,
+   * or {@code null}
+   */
   public String getShutdownHost() {
     return this.shutdownHost;
   }
   
+  /**
+   * Sets the hostname to which shutdown requests will be routed.
+   * Passing a {@code null} parameter to this method will result in
+   * "{@code localhost}" being used.
+   *
+   * @param shutdownHost the hostname to which shutdown requests will
+   * be routed; may be {@code null}
+   */
   public void setShutdownHost(final String shutdownHost) {
     this.shutdownHost = shutdownHost;
   }
 
+  /**
+   * Returns whether shutdown should be forced (if shutdown has been
+   * requested).  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more details.
+   *
+   * @return {@code true} if shutdown should be forced
+   */
   public boolean getForceShutdown() {
     return this.forceShutdown;
   }
 
+  /**
+   * Sets whether shutdown should be forced (if shutdown has been
+   * requested).  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more details.
+   *
+   * @param shutdown if {@code true}, then shutdown operations will be
+   * forced
+   */
   public void setForceShutdown(final boolean shutdown) {
     this.forceShutdown = shutdown;
   }
@@ -378,7 +435,9 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
   protected ProcessBuilder getServerSpawner() {
     final List<String> args = this.getServerArguments();
     assert args != null;
-    args.remove("-tcpDaemon"); // when you're spawning it, it should NEVER run as a daemon, no matter what.
+
+    // A spawned server should never run as a daemon.
+    args.remove("-tcpDaemon");
 
     int argumentIndex = 0;
 

@@ -35,7 +35,19 @@ import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 
 /**
+ * An {@link AbstractH2Mojo} that stops a running H2 TCP server.
+ *
+ * @author <a href="mailto:ljnelson@gmail.com">Laird Nelson</a>
+ *
  * @goal stop
+ *
+ * @phase post-integration-test
+ *
+ * @requiresProject false
+ *
+ * @since 1.0-SNAPSHOT
+ *
+ * @version 1.0-SNAPSHOT
  */
 public class StopH2Mojo extends AbstractH2Mojo {
 

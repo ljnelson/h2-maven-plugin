@@ -211,6 +211,11 @@
                 <placement>t</placement>
                 <head>Requires Dependency Resolution in Scope:</head>
               </tag>
+              <tag>
+                <name>requiresProject</name>
+                <placement>t</placement>
+                <head>Requires Project:</head>
+              </tag>
             </tags>
           </configuration>
         </plugin>
@@ -408,6 +413,11 @@
               <name>requiresDependencyResolution</name>
               <placement>t</placement>
               <head>Requires Dependency Resolution in Scope:</head>
+            </tag>
+            <tag>
+              <name>requiresProject</name>
+              <placement>t</placement>
+              <head>Requires Project:</head>
             </tag>
           </tags>
         </configuration>
