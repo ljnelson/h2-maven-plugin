@@ -51,8 +51,14 @@ import org.apache.maven.plugin.logging.Log;
  */
 public class StopH2Mojo extends AbstractH2Mojo {
 
+  /**
+   * Stops a running H2 TCP server by invoking the {@link
+   * AbstractH2Mojo#shutdownServer()} method.
+   *
+   * @exception MojoExecutionException if an error occurs
+   */
   @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
+  public void execute() throws MojoExecutionException {
     try {
       this.shutdownServer();
     } catch (final SQLException kaboom) {

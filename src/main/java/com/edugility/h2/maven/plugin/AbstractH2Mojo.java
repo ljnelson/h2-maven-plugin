@@ -58,9 +58,9 @@ import org.h2.tools.Server;
  *
  * @author <a href="mailto:ljnelson@gmail.com">Laird Nelson</a>
  *
- * @since <tt>1.0-SNAPSHOT</tt>
+ * @since 1.0
  *
- * @version <tt>1.0-SNAPSHOT</tt>
+ * @version 1.0
  */
 public abstract class AbstractH2Mojo extends AbstractMojo {
 
@@ -329,51 +329,164 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
     this.java = java;
   }
 
+  /**
+   * Returns any Java options passed to the spawned H2 process.  This
+   * method may return {@code null}.
+   *
+   * @return any Java options passed to the spawned H2 process, or
+   * {@code null}
+   */
   public String[] getJavaOptions() {
     return this.javaOptions;
   }
 
+  /**
+   * Sets any command-line options to be passed to the Java runtime
+   * when spawning a new H2 TCP server.
+   *
+   * @param javaOptions the options; may be {@code null}
+   */
   public void setJavaOptions(final String... javaOptions) {
     this.javaOptions = javaOptions;
   }
 
+  /**
+   * Returns {@code true} if the {@code -trace} option will be
+   * supplied to the spawned H2 TCP server.  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more details.
+   *
+   * @return {@code true} if the {@code -trace} option will be
+   * supplied to the spawned H2 TCP server
+   */
   public boolean getTrace() {
     return this.trace;
   }
 
+  /**
+   * Sets whether the {@code -trace} option will be supplied to new H2
+   * TCP servers.  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more details.
+   *
+   * @param trace whether the {@code -trace} option will be supplied
+   * to new H2 TCP servers
+   */
   public void setTrace(final boolean trace) {
     this.trace = trace;
   }
 
+  /**
+   * Returns {@code true} if the {@code -ifExists} option will be
+   * supplied to the spawned H2 TCP server.  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more details.
+   *
+   * @return {@code true} if the {@code -ifExists} option will be
+   * supplied to the spawned H2 TCP server
+   */
   public boolean getIfExists() {
     return this.ifExists;
   }
 
+  /**
+   * Sets whether the {@code -ifExists} option will be supplied to the
+   * spawned H2 TCP server.  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more details.
+   *
+   * @param ifExists whether the {@code -ifExists} option will be
+   * supplied to new H2 TCP servers
+   */
   public void setIfExists(final boolean ifExists) {
     this.ifExists = ifExists;
   }
 
+  /**
+   * Returns {@code true} if the {@code -tcpAllowOthers} option will
+   * be supplied to the spawned H2 TCP server.  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more details.
+   *
+   * @return {@code true} if the {@code -tcpAllowOthers} option will
+   * be supplied to the spawned H2 TCP server
+   */
   public boolean getAllowOthers() {
     return this.allowOthers;
   }
 
+  /**
+   * Sets whether the {@code -tcpAllowOthers} option will be supplied
+   * to the spawned H2 TCP server.  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more details.
+   *
+   * @param allowOthers whether the {@code -tcpAllowOthers} option
+   * will be supplied to new H2 TCP servers
+   */
   public void setAllowOthers(final boolean allowOthers) {
     this.allowOthers = allowOthers;
   }
 
+  /**
+   * Returns {@code true} if the {@code -tcpSSL} option will
+   * be supplied to the spawned H2 TCP server.  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more details.
+   *
+   * @return {@code true} if the {@code -tcpSSL} option will
+   * be supplied to the spawned H2 TCP server
+   */
   public boolean getUseSSL() {
     return this.useSSL;
   }
 
+  /**
+   * Sets whether the {@code -tcpSSL} option will be supplied
+   * to the spawned H2 TCP server.  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more details.
+   *
+   * @param useSSL whether the {@code -tcpSSL} option
+   * will be supplied to new H2 TCP servers
+   */
   public void setUseSSL(final boolean useSSL) {
     this.useSSL = useSSL;
   }
 
+  /**
+   * Returns the {@link File} representing the base directory from
+   * which H2 TCP servers will be spawned.  
+   *
+   * <p>This property corresponds to the {@code -baseDir} option
+   * supplied to spawned H2 TCP servers.  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more
+   * details.</p>
+   *
+   * <p>This method may return {@code null}.</p>
+   *
+   * @return the {@link File} representing the base directory, or
+   * {@code null}
+   */
   public File getBaseDirectory() {
     return this.baseDirectory;
   }
 
-  public void setBaseDirectory(File baseDirectory) {
+  /**
+   * Sets the base directory from which H2 TCP servers will be
+   * spawned.
+   *
+   * <p>This property corresponds to the {@code -baseDir} option
+   * supplied to spawned H2 TCP servers.  See <a
+   * href="http://www.h2database.com/javadoc/org/h2/tools/Server.html#main_String...">the
+   * documentation for the {@code Server} class</a> for more
+   * details.</p>
+   *
+   * @param baseDirectory a {@link File} representing the new base
+   * directory; may be {@code null}
+   */
+  public void setBaseDirectory(final File baseDirectory) {
     this.baseDirectory = baseDirectory;
   }
 

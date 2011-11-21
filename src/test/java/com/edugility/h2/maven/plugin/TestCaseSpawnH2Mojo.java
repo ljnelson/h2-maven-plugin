@@ -50,7 +50,9 @@ import static org.junit.Assert.*;
  *
  * @author <a href="mailto:ljnelson@gmail.com">Laird Nelson</a>
  *
- * @since 1.0-SNAPSHOT
+ * @since 1.0
+ *
+ * @version 1.0
  */
 public class TestCaseSpawnH2Mojo {
 

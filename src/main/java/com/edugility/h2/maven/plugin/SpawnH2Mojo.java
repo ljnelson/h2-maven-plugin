@@ -52,8 +52,14 @@ import org.apache.maven.plugin.logging.Log;
  */
 public class SpawnH2Mojo extends AbstractH2Mojo {
 
+  /**
+   * Spawns a new H2 TCP server by invoking the {@link
+   * AbstractH2Mojo#spawnServer()} method.
+   *
+   * @exception MojoExecutionException if there was any kind of error
+   */
   @Override
-  public void execute() throws MojoExecutionException, MojoFailureException {
+  public void execute() throws MojoExecutionException {
     final Log log = this.getLog();    
     try {
       this.spawnServer();

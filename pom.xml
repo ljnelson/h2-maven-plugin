@@ -326,7 +326,7 @@
     <mavenDependencyPluginVersion>2.3</mavenDependencyPluginVersion>
     <mavenEnforcerPluginVersion>1.0.1</mavenEnforcerPluginVersion>
     <mavenGpgPluginVersion>1.4</mavenGpgPluginVersion>
-    <mavenJarPluginVersion>2.3.1</mavenJarPluginVersion>
+    <mavenJarPluginVersion>2.3.2</mavenJarPluginVersion>
     <mavenJavadocPluginVersion>2.8</mavenJavadocPluginVersion>
     <mavenPluginPluginVersion>2.9</mavenPluginPluginVersion>
     <mavenPluginTestingHarnessVersion>2.0-alpha-1</mavenPluginTestingHarnessVersion>
@@ -359,6 +359,9 @@
 
     <!-- maven-resources-plugin Properties -->
     <maven.resources.escapeString>\</maven.resources.escapeString>
+
+    <!-- maven-site-plugin Properties -->
+    <maven.site.deploy.skip>true</maven.site.deploy.skip>
 
     <!-- maven-surefire-plugin Properties -->
     <surefire.useFile>false</surefire.useFile>
