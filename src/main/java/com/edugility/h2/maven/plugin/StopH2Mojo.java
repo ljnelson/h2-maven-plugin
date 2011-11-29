@@ -46,8 +46,6 @@ import org.apache.maven.plugin.logging.Log;
  * @requiresProject false
  *
  * @since 1.0-SNAPSHOT
- *
- * @version 1.0-SNAPSHOT
  */
 public class StopH2Mojo extends AbstractH2Mojo {
 

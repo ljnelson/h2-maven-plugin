@@ -59,8 +59,6 @@ import org.h2.tools.Server;
  * @author <a href="mailto:ljnelson@gmail.com">Laird Nelson</a>
  *
  * @since 1.0
- *
- * @version 1.0
  */
 public abstract class AbstractH2Mojo extends AbstractMojo {
 

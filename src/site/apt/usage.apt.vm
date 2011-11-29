@@ -1,0 +1,89 @@
+                                ------
+                                Usage
+                                ------
+                             Laird Nelson
+                                ------
+                              2011-11-29
+                                ------
+
+Usage
+
+* Summary
+
+ The <<<h2-maven-plugin>>> is a standard Maven plugin that helps with
+ unit- and integration-testing database-related projects that need to
+ interact with the {{{http://h2database.com/html/main.html}H2
+ database}}.  Install it and use it like other standard Maven plugins.
+
+* Installation
+
+ Install the plugin as you would any other Maven plugin.  In your
+ <<<<build>>>>'s <<<<plugins>>>> stanza, include a <<<<plugin>>>>
+ element referencing the <<<h2-maven-plugin>>>:
+
++---+
+  <plugin>
+    <groupId>com.edugility</groupId>
+    <artifactId>jpa-maven-plugin</artifactId>
+    <version>${projectVersion}</version>
+    <!-- ...more to come. -->
+  </plugin>
++---+
+
+* Goal selection
+
+ Please see the {{{./plugin-info.html}Goals}} page for more
+ details on individual goals.
+
+** <<<h2:spawn>>>
+
+ Spawns a new instance of an H2 TCP server in a separate process.
+ This process will continue to run until it is correctly and
+ appropriately stopped (often by using the <<<h2:stop>>> goal).
+
+ This goal binds by default to the <<<pre-integration-test>>> phase.
+
+ Here is an example of configuring the plugin to run this goal using
+ the defaults:
+
++---
+   <plugin>
+     <groupId>com.edugility</groupId>
+     <artifactId>jpa-maven-plugin</artifactId>
+     <version>${projectVersion}</version>
+     <executions>
+       <execution>
+         <id>Spawn a new H2 TCP server</id>
+         <goals>
+           <goal>spawn</goal>
+         </goals>
+       </execution>
+     </executions>
+   </plugin>
++---
+
+** <<<h2:stop>>>
+
+ Stops a running H2 TCP server.  The server need not have been started
+ via the <<<h2:spawn>>> goal.
+
+ This goal binds by default to the <<<post-integration-test>>> phase.
+
+ Here is an example of configuring the plugin to run this goal using
+ the defaults:
+
++---
+<plugin>
+     <groupId>com.edugility</groupId>
+     <artifactId>jpa-maven-plugin</artifactId>
+     <version>${projectVersion}</version>
+     <executions>
+       <execution>
+         <id>Stop a running H2 TCP server</id>
+         <goals>
+           <goal>stop</goal>
+         </goals>
+       </execution>
+     </executions>
+   </plugin>
++---

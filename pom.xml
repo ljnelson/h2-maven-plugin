@@ -57,13 +57,6 @@
     <url>https://github.com/ljnelson/${project.artifactId}/issues</url>
   </issueManagement>
 
-  <distributionManagement>
-    <site>
-      <id>Github project site</id>
-      <url>gitsite:git@github.com/ljnelson/${project.artifactId}.git</url>
-    </site>
-  </distributionManagement>
-
   <dependencyManagement>
     <dependencies>
 
@@ -281,24 +274,6 @@
       </plugins>
     </pluginManagement>
 
-    <extensions>
-      <extension>
-        <groupId>org.apache.maven.scm</groupId>
-        <artifactId>maven-scm-manager-plexus</artifactId>
-        <version>${mavenScmManagerPlexusVersion}</version>
-      </extension>
-      <extension>
-        <groupId>org.apache.maven.scm</groupId>
-        <artifactId>maven-scm-provider-gitexe</artifactId>
-        <version>${mavenScmProviderGitexeVersion}</version>
-      </extension>
-      <extension>
-        <groupId>org.kathrynhuxtable.maven.wagon</groupId>
-        <artifactId>wagon-gitsite</artifactId>
-        <version>${wagonGitsiteVersion}</version>
-      </extension>
-    </extensions>
-    
     <resources>
       <resource>
         <directory>${basedir}/src/main/resources</directory>
@@ -341,7 +316,6 @@
     <mavenSurefirePluginVersion>2.10</mavenSurefirePluginVersion>
     <mavenVersion>3.0.3</mavenVersion>
     <versionsMavenPluginVersion>1.2</versionsMavenPluginVersion>
-    <wagonGitsiteVersion>0.4-SNAPSHOT</wagonGitsiteVersion>
 
     <!-- maven-compiler-plugin Properties -->
     <maven.compiler.showDeprecation>true</maven.compiler.showDeprecation>
@@ -368,6 +342,7 @@
 
     <!-- Other Properties -->
     <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
+    <projectVersion>${project.version}</projectVersion>
 
   </properties>
 
