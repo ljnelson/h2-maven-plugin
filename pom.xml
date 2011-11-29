@@ -293,7 +293,7 @@
   <properties>
 
     <!-- Versions -->
-    <h2Version>1.3.161</h2Version>
+    <h2Version>1.3.162</h2Version>
     <junitVersion>4.10</junitVersion>    
     <mavenAssemblyPluginVersion>2.2.1</mavenAssemblyPluginVersion>
     <mavenCleanPluginVersion>2.4.1</mavenCleanPluginVersion>

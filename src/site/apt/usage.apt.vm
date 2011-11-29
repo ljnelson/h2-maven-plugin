@@ -73,7 +73,7 @@ Usage
  the defaults:
 
 +---
-<plugin>
+   <plugin>
      <groupId>com.edugility</groupId>
      <artifactId>jpa-maven-plugin</artifactId>
      <version>${projectVersion}</version>
