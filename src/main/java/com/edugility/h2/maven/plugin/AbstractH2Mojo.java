@@ -1,6 +1,6 @@
 /* -*- mode: Java; c-basic-offset: 2; indent-tabs-mode: nil -*-
  *
- * Copyright (c) 2011-2011 Edugility LLC.
+ * Copyright (c) 2011-2012 Edugility LLC.
  *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
@@ -38,6 +38,7 @@ import java.security.ProtectionDomain;
 
 import java.sql.SQLException;
 
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -61,6 +62,13 @@ import org.h2.tools.Server;
  * @since 1.0
  */
 public abstract class AbstractH2Mojo extends AbstractMojo {
+
+  /**
+   * The {@link Service}s to spawn.
+   *
+   * @parameter property="services"
+   */
+  private List<Service> services;
 
   /**
    * Whether SSL should be used.  See <a
@@ -177,16 +185,51 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    *
    * @parameter property="javaOptions"
    */
-  private String[] javaOptions;
+  private String[] javaOptions;  
 
   /**
    * Creates a new {@link AbstractH2Mojo}.
    */
   protected AbstractH2Mojo() {
     super();
-    this.setPort(9092);
+    final Service tcpService = new Service("tcp", Service.getDefaultPort("tcp"), false, false);
+    this.setServices(Collections.singletonList(tcpService));
+    this.setPort(Service.getDefaultPort("tcp"));
     this.setShutdownPassword("h2-maven-plugin");
     this.setJava(new File(new File(new File(System.getProperty("java.home")), "bin"), "java"));
+  }
+
+  public List<Service> getServices() {
+    return this.services;
+  }
+
+  public Service getService(final String id) {
+    Service service = null;
+    final List<Service> services = this.getServices();
+    if (services != null && !services.isEmpty()) {
+      for (final Service s : services) {
+        if (s != null) {
+          if (id == null) {
+            if (s.getId() == null) {
+              service = s;
+              break;
+            }
+          } else if (id.equals(s.getId())) {
+            service = s;
+            break;
+          }
+        }
+      }
+    }
+    return service;
+  }
+
+  public void setServices(final List<Service> services) {
+    if (services == null || services.isEmpty()) {
+      this.services = Collections.emptyList();
+    } else {
+      this.services = services;
+    }
   }
 
   /**
@@ -408,7 +451,10 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    *
    * @return {@code true} if the {@code -tcpAllowOthers} option will
    * be supplied to the spawned H2 TCP server
+   *
+   * @deprecated Use the correct {@link Service} instead.
    */
+  @Deprecated
   public boolean getAllowOthers() {
     return this.allowOthers;
   }
@@ -421,9 +467,16 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    *
    * @param allowOthers whether the {@code -tcpAllowOthers} option
    * will be supplied to new H2 TCP servers
+   *
+   * @deprecated Use the correct {@link Service} instead.
    */
+  @Deprecated
   public void setAllowOthers(final boolean allowOthers) {
     this.allowOthers = allowOthers;
+    final Service tcpService = this.getService("tcp");
+    if (tcpService != null) {
+      tcpService.setAllowOthers(this.getAllowOthers());
+    }
   }
 
   /**
@@ -434,7 +487,10 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    *
    * @return {@code true} if the {@code -tcpSSL} option will
    * be supplied to the spawned H2 TCP server
+   *
+   * @deprecated Use the correct {@link Service} instead.
    */
+  @Deprecated
   public boolean getUseSSL() {
     return this.useSSL;
   }
@@ -447,9 +503,16 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    *
    * @param useSSL whether the {@code -tcpSSL} option
    * will be supplied to new H2 TCP servers
+   *
+   * @deprecated Use the correct {@link Service} instead.
    */
+  @Deprecated
   public void setUseSSL(final boolean useSSL) {
     this.useSSL = useSSL;
+    final Service tcpService = this.getService("tcp");
+    if (tcpService != null) {
+      tcpService.setSSL(this.getUseSSL());
+    }
   }
 
   /**
@@ -495,7 +558,10 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    * @return the port on which new H2 TCP servers spawned by this
    * class will listen; this will be a number between {@code 0} and
    * {@code 65535}, inclusive
+   *
+   * @deprecated Use the correct {@link Service} instead.
    */
+  @Deprecated
   public int getPort() {
     return this.port;
   }
@@ -506,14 +572,23 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    *
    * @param port the new port; will be constrained to be between
    * {@code 0} and {@code 65535}, inclusive
+   *
+   * @deprecated Use the correct {@link Service} instead.
    */
+  @Deprecated
   public void setPort(final int port) {
     this.port = Math.min(65535, Math.max(0, port));
+    final Service tcpService = this.getService("tcp");
+    if (tcpService != null) {
+      tcpService.setPort(this.getPort());
+    }
   }
 
   /**
    * Creates a new {@link Server} using H2's {@link
-   * Server#createTcpServer(String[])} method.  This method must never
+   * Server#createTcpServer(String[])}, {@link
+   * Server#createPgServer(String[])} or {@link
+   * Server#createWebServer(String[])} method.  This method must never
    * return {@code null}.
    *
    * <p><strong>Note:</strong> This method is experimental.</p>
@@ -524,8 +599,19 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    * @exception SQLException if an error occurs
    */
   protected Server createServer() throws SQLException {
+    Server server = null;
     final List<String> args = this.getServerArguments();
-    final Server server = Server.createTcpServer(args.toArray(new String[args.size()]));
+    if (args == null || args.isEmpty()) {
+      throw new SQLException("Cannot create server; no arguments");
+    } else if (args.contains("-tcp")) {
+      server = Server.createTcpServer(args.toArray(new String[args.size()]));
+    } else if (args.contains("-pg")) {
+      server = Server.createPgServer(args.toArray(new String[args.size()]));
+    } else if (args.contains("-web")) {
+      server = Server.createWebServer(args.toArray(new String[args.size()]));
+    } else {
+      throw new SQLException("Unknown service");
+    }
     return server;
   }
 
@@ -549,6 +635,8 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
 
     // A spawned server should never run as a daemon.
     args.remove("-tcpDaemon");
+    args.remove("-pgDaemon");
+    args.remove("-webDaemon");
 
     int argumentIndex = 0;
 
@@ -632,39 +720,68 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    */
   protected List<String> getServerArguments() {
 
-    final List<String> args = new LinkedList<String>();
+    List<String> args = null;
 
-    final File baseDirectory = this.getBaseDirectory();
-    if (baseDirectory != null) {
-      args.add("-baseDir");
-      args.add(String.format("%s", baseDirectory.getAbsolutePath()));
+    final List<Service> services = this.getServices();
+    int serviceCount = 0;
+    if (services != null && !services.isEmpty()) {
+      for (final Service service : services) {
+        if (service != null) {
+
+          if (args == null) {
+            args = new LinkedList<String>();
+          }
+          
+          final String id = service.getId();
+          if (id != null) {
+            args.add(new StringBuilder("-").append(id).toString());
+          }
+
+          final int port = service.getPort();
+          if (port >= 0) {
+            args.add(new StringBuilder("-").append(id).append("Port").toString());
+            args.add(String.format("%d", Math.min(65535, Math.max(0, this.getPort()))));
+          }
+
+          final boolean allowOthers = service.getAllowOthers();
+          if (allowOthers) {
+            args.add(new StringBuilder("-").append(id).append("AllowOthers").toString());
+          }
+
+          final boolean ssl = service.getSSL();
+          if (ssl) {
+            args.add(new StringBuilder("-").append(id).append("SSL").toString());
+          }
+
+          serviceCount++;
+        }
+      }
     }
+    if (args != null && serviceCount > 0) {
 
-    if (this.getIfExists()) {
-      args.add("-ifExists");
+      final File baseDirectory = this.getBaseDirectory();
+      if (baseDirectory != null) {
+        args.add("-baseDir");
+        args.add(String.format("%s", baseDirectory.getAbsolutePath()));
+      }
+      
+      if (this.getIfExists()) {
+        args.add("-ifExists");
+      }
+      
+      if (this.getTrace()) {
+        args.add("-trace");
+      }
+      
+      final String password = this.getShutdownPassword();
+      if (password != null && !password.isEmpty()) {
+        args.add("-tcpPassword");
+        args.add(password);
+      }
+      
     }
-
-    if (this.getTrace()) {
-      args.add("-trace");
-    }
-
-    args.add("-tcp");
-
-    if (this.getAllowOthers()) {
-      args.add("-tcpAllowOthers");
-    }
-
-    final String password = this.getShutdownPassword();
-    if (password != null && !password.isEmpty()) {
-      args.add("-tcpPassword");
-      args.add(password);
-    }
-
-    args.add("-tcpPort");
-    args.add(String.format("%d", Math.min(65535, Math.max(0, this.getPort()))));
-
-    if (this.getUseSSL()) {
-      args.add("-tcpSSL");
+    if (args == null) {
+      args = Collections.emptyList();
     }
     return args;
   }
