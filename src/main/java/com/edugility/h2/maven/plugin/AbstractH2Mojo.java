@@ -199,10 +199,30 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
     this.setJava(new File(new File(new File(System.getProperty("java.home")), "bin"), "java"));
   }
 
+  /**
+   * Returns a {@link List} of {@link Service}s that will be
+   * {@linkplain #spawnServer() spawned}.  This method never returns
+   * {@code null}.
+   *
+   * @return a non-{@code null} {@link List} of {@link Service}s
+   */
   public List<Service> getServices() {
     return this.services;
   }
 
+  /**
+   * Returns the {@link Service} whose {@link Service#getId() id} is
+   * equal to the supplied {@link String}, or {@code null} if there is
+   * no such {@link Service}.
+   *
+   * @param the {@link Service#getId() id} of the {@link Service} to
+   * return; may be {@code null}
+   *
+   * @return a {@link Service} that is a member of this {@link
+   * AbstractH2Mojo}'s {@linkplain #getServices() list of
+   * <tt>Service</tt>s}, or {@code null} if there is no such {@link
+   * Service}
+   */
   public Service getService(final String id) {
     Service service = null;
     final List<Service> services = this.getServices();
@@ -224,6 +244,14 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
     return service;
   }
 
+  /**
+   * Installs a {@link List} of {@link Service}s that this {@link
+   * AbstractH2Mojo} is capable of {@linkplain #spawnServer()
+   * spawning}.
+   *
+   * @param services a {@link List} of {@link Service}s; may be {@code
+   * null}
+   */
   public void setServices(final List<Service> services) {
     if (services == null || services.isEmpty()) {
       this.services = Collections.emptyList();
