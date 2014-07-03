@@ -185,7 +185,15 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    *
    * @parameter property="javaOptions"
    */
-  private String[] javaOptions;  
+  private String[] javaOptions;
+  
+  /**
+   * Any additions to the classpath.
+   *
+   * @parameter property="classpath"
+   */
+  private File[] classpath;
+
 
   /**
    * Creates a new {@link AbstractH2Mojo}.
@@ -417,6 +425,27 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
    */
   public void setJavaOptions(final String... javaOptions) {
     this.javaOptions = javaOptions;
+  }
+
+  /**
+   * Returns any additional directories or JAR-files to be added
+   * to the classpath.
+   *
+   * @return any additional classpath entries for the spawned H2 process, or
+   * {@code null}
+   */
+  public File[] getClasspath() {
+    return this.classpath;
+  }
+
+  /**
+   * Sets any additional classpath entries to be passed to the Java runtime
+   * when spawning a new H2 TCP server.
+   *
+   * @param classpath the options; may be {@code null}
+   */
+  public void setClasspath(final File... classpath) {
+    this.classpath = classpath;
   }
 
   /**
@@ -684,9 +713,19 @@ public abstract class AbstractH2Mojo extends AbstractMojo {
     }
 
     args.add(argumentIndex++, "-cp");
+    StringBuffer cpAsText = new StringBuffer();
+    final File cp[] = this.getClasspath();
+    if (cp != null && cp.length > 0) {
+    	for (final File jarOrDirectory : cp) {
+    		if(jarOrDirectory != null) {
+    			cpAsText.append(jarOrDirectory.getAbsolutePath()).append(File.pathSeparatorChar);
+    		}
+    	}
+    }
     final File fileLocation = this.getH2();
     assert fileLocation != null;
-    args.add(argumentIndex++, fileLocation.getAbsolutePath());
+    cpAsText.append(fileLocation.getAbsolutePath());
+    args.add(argumentIndex++, cpAsText.toString());
 
     args.add(argumentIndex++, Server.class.getName());
 
